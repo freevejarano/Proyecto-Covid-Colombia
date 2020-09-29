@@ -27,16 +27,32 @@ urlDataSQL = 'sql=SELECT  "Localidad de residencia", count(*) as Cantidad from "
 requ= rq.get(url=urlDatosAbiertos+urlDataSQL)
 
 #Organiza los datos obtendios como Json en un arreglo
-requJson= rq.json()
+requJson= requ.json()
 Data= requJson['result']['records']
 
 #Asignción en los arreglos
 i=0
 for f in Data:
-    L_Valor.append(int(f["Cantidad"]))
-    L_Localidad.append(f["Residencia"])
+    L_Valor.append(int(f["cantidad"]))
+    L_Localidad.append(f["Localidad de residencia"])
     i=i+1
 
+#Se hace un gráfico de barras
+pt.rcdefaults()
+fig, ax = pt.subplots(figsize=(11, 5))
 
+# Example data
+
+y_pos = ny.arange(len(L_Localidad))
+
+ax.barh(y_pos, L_Valor, align='center')
+ax.set_yticks(y_pos)
+ax.set_yticklabels(L_Localidad)
+ax.invert_yaxis()  # labels read top-to-bottom
+ax.set_xlabel('Número de contagiados')
+ax.set_title('Contagios Covid-19 Bogotá')
+
+pt.grid()
+pt.show()
 
 
