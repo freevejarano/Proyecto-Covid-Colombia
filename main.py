@@ -23,27 +23,38 @@ results = client.get("gt2j-8ykr",query="SELECT ciudad_de_ubicaci_n as ciudad, co
 
 # Convert to pandas DataFrame
 df = pd.DataFrame.from_records(results)
-
-
+se = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT sexo, count(sexo) as ctdGenero GROUP BY sexo ORDER BY sexo"))
+#print(se.columns)
 
 #print(df.dtypes)
 ciudad=[]
 cantidad=[]
+valGenero=[0,0]
+sexo=['Masculino','Femenino']
 
 for x in range(len(df['ciudad'])):
     if(int(df['cantidad'][x])>10000):
         ciudad.append(df['ciudad'][x])
         cantidad.append(df['cantidad'][x])
 
+for x in range(len(se['sexo'])):
+    if(se['sexo'][x] == 'M' or se['sexo'][x] == 'm'):
+        valGenero[0]+= int(se['ctdGenero'][x])
+    else:
+        valGenero[1]+= int(se['ctdGenero'][x])
+
+print(valGenero[0]," ",valGenero[1])
+
+
 ny.random.seed(19680801)
 pt.rcdefaults()
 fig, ax = pt.subplots(figsize=(11, 5))
 
-y_pos = ny.arange(len(ciudad))
+y_pos = ny.arange(2)
 
-ax.barh(y_pos, cantidad, align='center')
+ax.barh(y_pos, valGenero, align='center')
 ax.set_yticks(y_pos)
-ax.set_yticklabels(ciudad)
+ax.set_yticklabels(sexo)
 ax.invert_yaxis()
 ax.set_xlabel('Número de Personas Contagiadas')
 ax.set_title('Contagios Covid-19 Colombia')
@@ -59,40 +70,11 @@ ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
 ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 
-fig, ax = pt.subplots(figsize=(15, 10), subplot_kw=dict(aspect="equal"))
-
-recipe = ciudad
-
-data = cantidad
-
-wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
-
-bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
-kw = dict(arrowprops=dict(arrowstyle="-"),
-          bbox=bbox_props, zorder=0, va="center")
-
-for i, p in enumerate(wedges):
-    ang = (p.theta2 - p.theta1)/2. + p.theta1
-    y = ny.sin(ny.deg2rad(ang))
-    x = ny.cos(ny.deg2rad(ang))
-    horizontalalignment = {-1: "right", 1: "left"}[int(ny.sign(x))]
-    connectionstyle = "angle,angleA=0,angleB={}".format(ang)
-    kw["arrowprops"].update({"connectionstyle": connectionstyle})
-    ax.annotate(recipe[i], xy=(x, y), xytext=(1.35*ny.sign(x), 1.4*y),
-                horizontalalignment=horizontalalignment, **kw)
-
-ax.set_title("Contagios Covid-19 Bogotá")
 
 
 
-t = ny.arange(22)
-s = ny.array(cantidad)
 
-fig, ax = pt.subplots()
-ax.plot(t, s)
 
-ax.grid(True, linestyle='-.')
-ax.tick_params(labelcolor='r', labelsize='medium', width=3)
 
 
 
