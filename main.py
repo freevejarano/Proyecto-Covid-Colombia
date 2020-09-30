@@ -5,39 +5,30 @@
 
 PROYECTO COVID 19 COLOMBIA
 """
-#!/usr/bin/env python
-# make sure to install these packages before running:
-# pip install pandas
-# pip install sodapy
 
-import requests as rq
-import pandas as pd
-from sodapy import Socrata
-import numpy as ny
-import matplotlib.pyplot as pt
+#Librerias
+import pandas as pd #Uso de DataFrame
+from sodapy import Socrata #Petición HTTP
+import numpy as ny #Manejo de Números
+import matplotlib.pyplot as pt #Uso de Gráficas
 
-
+#Uso de Socrata Para Acceder a Datos Abiertos de Colombia con Token Único
 client = Socrata("www.datos.gov.co", "GJekEiJhbhkJ8pr6c4tjbMBYq")
 
-results = client.get("gt2j-8ykr",query="SELECT ciudad_de_ubicaci_n as ciudad, count(ciudad_de_ubicaci_n) as cantidad GROUP BY ciudad_de_ubicaci_n ORDER BY ciudad_de_ubicaci_n")
 
-# Convert to pandas DataFrame
-df = pd.DataFrame.from_records(results)
+### Conversión de Respuesta HTTP en pandas DataFrame
+cd = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT ciudad_de_ubicaci_n as ciudad, count(ciudad_de_ubicaci_n) as cantidad GROUP BY ciudad_de_ubicaci_n ORDER BY ciudad_de_ubicaci_n"))
 se = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT sexo, count(sexo) as ctdGenero GROUP BY sexo ORDER BY sexo"))
-ed= pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT edad, count(edad) as cont GROUP BY edad ORDER BY edad"))
-#print(se.columns)
-print(ed)
-#print(df.dtypes)
+ed = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT edad, count(edad) as cont GROUP BY edad ORDER BY edad"))
+mt = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT estado, count(estado) as cont GROUP BY estado ORDER BY estado"))
 
-ciudad=[]
-cantidad=[]
+
+
+
+
+#Solución problema de BD por género en mayúscula y minúsucula
 valGenero=[0,0]
-sexo=['Masculino','Femenino']
-
-for x in range(len(df['ciudad'])):
-    if(int(df['cantidad'][x])>10000):
-        ciudad.append(df['ciudad'][x])
-        cantidad.append(df['cantidad'][x])
+sexo=['Hombres','Mujeres']
 
 for x in range(len(se['sexo'])):
     if(se['sexo'][x] == 'M' or se['sexo'][x] == 'm'):
@@ -45,32 +36,29 @@ for x in range(len(se['sexo'])):
     else:
         valGenero[1]+= int(se['ctdGenero'][x])
 
-print(valGenero[0]," ",valGenero[1])
 
+#Gráfica de Torta de Casos Por Género
+fig1, ax1 = pt.subplots(figsize=(10,7))
+ax1.pie(valGenero, labels=sexo, autopct='%1.1f%%',
+        shadow=True, startangle=90)
+ax1.axis('equal')
 
-ny.random.seed(19680801)
-pt.rcdefaults()
-fig, ax = pt.subplots(figsize=(11, 5))
+#Clasificación de Casos Por Ciudades Principales
+ciudad=[]
+cantidad=[]
 
-y_pos = ny.arange(2)
+for x in range(len(cd['ciudad'])):
+    if(int(cd['cantidad'][x])>10000):
+        ciudad.append(cd['ciudad'][x])
+        cantidad.append(cd['cantidad'][x])
 
-ax.barh(y_pos, valGenero, align='center')
-ax.set_yticks(y_pos)
-ax.set_yticklabels(sexo)
-ax.invert_yaxis()
-ax.set_xlabel('Número de Personas Contagiadas')
-ax.set_title('Contagios Covid-19 Colombia')
 
 #Diagrama de Torta por Ciudades
-labels = ciudad
-sizes = cantidad
-  # only "explode" the 2nd slice (i.e. 'Hogs')
-
 fig1, ax1 = pt.subplots(figsize=(10,7))
-ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
+ax1.pie(cantidad, labels=ciudad, autopct='%1.1f%%',
         shadow=True, startangle=90)
-ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-###
+ax1.axis('equal')
+
 
 #Diagrama de Barras por edad y Género
 
@@ -80,8 +68,8 @@ for x in range(len(se['sexo'])):
     else:
         valGenero[1]+= int(se['ctdGenero'][x])
 
+#Clasificación de Edades Por Segmentos
 agecant=[0,0,0,0,0]
-
 age=['NIÑOS\n0-12\naños','ADOLESCENTES\n13-18\naños','JOVENES\n19-26\naños','ADULTOS\n26-59\naños','ANCIANOS\n60+\naños']
 
 for x in range(len(ed['edad'])):
@@ -99,16 +87,36 @@ for x in range(len(ed['edad'])):
         agecant[4]+=aux2
 
 
-
+#Gráfica de Barras de Casos Por Edad
 fig, ax = pt.subplots()
 ax.set_ylabel('Número de Casos')
 ax.set_title('Casos Confirmados Por Edades')
 pt.bar(age, agecant)
-pt.savefig('gr.png')
+pt.savefig('Grafico_Edad.png', bbox_inches='tight')
 
 
+#Solución Problema Mayúscula En Estado
+estado=['Asintomático','Leve','Moderado','Grave','Fallecido']
+estCant=[0,0,0,0,0]
 
+for x in range(len(mt['estado'])):
+    aux=mt['estado'][x]
+    aux2=int(mt['cont'][x])
+    if(aux=="Asintomático"):
+        estCant[0]+=aux2
+    elif (aux=="leve" or aux=="Leve" or aux=="LEVE"):
+        estCant[1]+=aux2
+    elif (aux=="Moderado"):
+        estCant[2]+=aux2
+    elif (aux=="Grave"):
+        estCant[3]+=aux2
+    elif (aux=="Fallecido"):
+        estCant[4]+=aux2
 
-
-
-pt.show() #Muestra la gráfica
+#Gráfica de Barras de Casos Por Edad
+fig, ax = pt.subplots()
+ax.set_ylabel('Número de Casos')
+ax.set_title('Estado de Casos')
+pt.bar(estado, estCant)
+#pt.savefig('Grafico_Estado.png', bbox_inches='tight')
+pt.show()
