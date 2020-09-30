@@ -30,29 +30,27 @@ requ= rq.get(url=urlDatosAbiertos+urlDataSQL)
 requJson= requ.json()
 Data= requJson['result']['records']
 
-#Asignción en los arreglos
+#Asignación en los arreglos
 i=0
 for f in Data:
     L_Valor.append(int(f["cantidad"]))
     L_Localidad.append(f["Localidad de residencia"])
     i=i+1
 
-#Se hace un gráfico de barras
+#Se hace un gráfico de barras con los datos por localidad
+ny.random.seed(19680801)
 pt.rcdefaults()
 fig, ax = pt.subplots(figsize=(11, 5))
-
-# Example data
 
 y_pos = ny.arange(len(L_Localidad))
 
 ax.barh(y_pos, L_Valor, align='center')
 ax.set_yticks(y_pos)
 ax.set_yticklabels(L_Localidad)
-ax.invert_yaxis()  # labels read top-to-bottom
-ax.set_xlabel('Número de contagiados')
+ax.invert_yaxis()
+ax.set_xlabel('Número de Personas Contagiadas')
 ax.set_title('Contagios Covid-19 Bogotá')
 
-pt.grid()
-pt.show()
-
+pt.grid() #Activa la cuadricula
+pt.show() #Muestra la gráfica
 
