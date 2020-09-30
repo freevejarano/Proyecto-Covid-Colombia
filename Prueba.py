@@ -13,24 +13,41 @@ import matplotlib.pyplot as pt
 
 client = Socrata("www.datos.gov.co", "GJekEiJhbhkJ8pr6c4tjbMBYq")
 
-results = client.get("gt2j-8ykr", limit=1000000)
-
+results = client.get("gt2j-8ykr",query="SELECT ciudad_de_ubicaci_n, count(ciudad_de_ubicaci_n) as cantidad GROUP BY ciudad_de_ubicaci_n ORDER BY ciudad_de_ubicaci_n")
 
 # Convert to pandas DataFrame
 df = pd.DataFrame.from_records(results)
 
-idCaso=[]
-Ciudad= df.columns
+print(df)
 
 
 
-c= df.groupby('ciudad_de_ubicaci_n')['id_de_caso'].count()['Villavicencio']
-print(c)
+
+
+
+
+
+
+
+
+
+
+
+
+""""
+ciudad= df.columns
+casoxC=[len(df.columns)]
+
+    
+
+print(casoxC)
+#c= df.groupby('ciudad_de_ubicaci_n')['id_de_caso'].count()['Villavicencio']
+#print(c)
 #print(df['ciudad_de_ubicaci_n'].describe())
 
 
 
-"""pt.rcdefaults()
+pt.rcdefaults()
 fig, ax = pt.subplots(figsize=(11, 5))
 
 y_pos = ny.arange(len(Ciudad))
