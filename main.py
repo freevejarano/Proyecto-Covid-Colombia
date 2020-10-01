@@ -6,11 +6,14 @@
 PROYECTO COVID 19 COLOMBIA
 """
 
-#Librerias
+#### LIBRERIAS #####
 import pandas as pd #Uso de DataFrame
 from sodapy import Socrata #Petición HTTP
 import numpy as ny #Manejo de Números
 import matplotlib.pyplot as pt #Uso de Gráficas
+import time #Manejo del tiempo actual
+
+### PETICIONES HTTP ###
 
 #Uso de Socrata Para Acceder a Datos Abiertos de Colombia con Token Único
 client = Socrata("www.datos.gov.co", "GJekEiJhbhkJ8pr6c4tjbMBYq")
@@ -23,7 +26,11 @@ ed = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT edad, count
 mt = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT estado, count(estado) as cont GROUP BY estado ORDER BY estado"))
 
 
+### MANEJO DE DATOS / GRÁFICOS ###
 
+
+#Se obtiene la fecha actual para el nombre del PNG generado por cada gráfica
+hoy=time.strftime("%d-%m-%y")
 
 
 #Solución problema de BD por género en mayúscula y minúsucula
@@ -39,9 +46,12 @@ for x in range(len(se['sexo'])):
 
 #Gráfica de Torta de Casos Por Género
 fig1, ax1 = pt.subplots(figsize=(10,7))
+pt.title("CASOS CONFIRMADOS POR GÉNERO DE COVID-19 EN COLOMBIA\n", fontdict={'fontsize':15})
 ax1.pie(valGenero, labels=sexo, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')
+fname="GraficoTorta_Genero_Covid_Colombia_"+hoy+".png"
+pt.savefig(fname, bbox_inches='tight')
 
 #Clasificación de Casos Por Ciudades Principales
 ciudad=[]
@@ -54,19 +64,16 @@ for x in range(len(cd['ciudad'])):
 
 
 #Diagrama de Torta por Ciudades
+
 fig1, ax1 = pt.subplots(figsize=(10,7))
+pt.title("CASOS CONFIRMADOS DE COVID-19 EN LAS PRINCIPALES CIUDADES DE COLOMBIA\n", fontdict={'fontsize':15})
 ax1.pie(cantidad, labels=ciudad, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')
+fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
+pt.savefig(fname, bbox_inches='tight')
 
 
-#Diagrama de Barras por edad y Género
-
-for x in range(len(se['sexo'])):
-    if(se['sexo'][x] == 'M' or se['sexo'][x] == 'm'):
-        valGenero[0]+= int(se['ctdGenero'][x])
-    else:
-        valGenero[1]+= int(se['ctdGenero'][x])
 
 #Clasificación de Edades Por Segmentos
 agecant=[0,0,0,0,0]
@@ -90,15 +97,17 @@ for x in range(len(ed['edad'])):
 #Gráfica de Barras de Casos Por Edad
 fig, ax = pt.subplots()
 ax.set_ylabel('Número de Casos')
-ax.set_title('Casos Confirmados Por Edades')
+ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR EDADES')
 pt.bar(age, agecant)
-pt.savefig('Grafico_Edad.png', bbox_inches='tight')
+fname="GraficoBarras_Edad_Covid_Colombia_"+hoy+".png"
+pt.savefig(fname, bbox_inches='tight')
 
 
 #Solución Problema Mayúscula En Estado
 estado=['Asintomático','Leve','Moderado','Grave','Fallecido']
 estCant=[0,0,0,0,0]
 
+#
 for x in range(len(mt['estado'])):
     aux=mt['estado'][x]
     aux2=int(mt['cont'][x])
@@ -116,7 +125,11 @@ for x in range(len(mt['estado'])):
 #Gráfica de Barras de Casos Por Edad
 fig, ax = pt.subplots()
 ax.set_ylabel('Número de Casos')
-ax.set_title('Estado de Casos')
+ax.set_title('ESTADO DE CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA')
 pt.bar(estado, estCant)
-#pt.savefig('Grafico_Estado.png', bbox_inches='tight')
+fname="GraficoBarras_Estado_Covid_Colombia_"+hoy+".png"
+pt.savefig(fname, bbox_inches='tight')
+
+
+#Muestra todas las gráficas almacenadas
 pt.show()
