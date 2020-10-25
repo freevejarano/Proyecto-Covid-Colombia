@@ -9,9 +9,10 @@ PROYECTO COVID 19 COLOMBIA
 #### LIBRERIAS #####
 import pandas as pd #Uso de DataFrame
 from sodapy import Socrata #Petición HTTP
-import numpy as ny #Manejo de Números
+import numpy as ny #Manejo de Vectores
 import matplotlib.pyplot as pt #Uso de Gráficas
 import time #Manejo del tiempo actual
+from datetime import date
 
 ### PETICIONES HTTP ###
 
@@ -24,7 +25,7 @@ cd = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT ciudad_de_u
 se = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT sexo, count(sexo) as ctdGenero GROUP BY sexo ORDER BY sexo"))
 ed = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT edad, count(edad) as cont GROUP BY edad ORDER BY edad"))
 mt = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT estado, count(estado) as cont GROUP BY estado ORDER BY estado"))
-
+fe = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT fecha_de_notificaci_n as fecha, count(fecha_de_notificaci_n) as cantidad GROUP BY fecha_de_notificaci_n ORDER BY fecha_de_notificaci_n"))
 
 ### MANEJO DE DATOS / GRÁFICOS ###
 
@@ -107,7 +108,7 @@ pt.savefig(fname, bbox_inches='tight')
 estado=['Asintomático','Leve','Moderado','Grave','Fallecido']
 estCant=[0,0,0,0,0]
 
-#
+
 for x in range(len(mt['estado'])):
     aux=mt['estado'][x]
     aux2=int(mt['cont'][x])
@@ -122,12 +123,52 @@ for x in range(len(mt['estado'])):
     elif (aux=="Fallecido"):
         estCant[4]+=aux2
 
-#Gráfica de Barras de Casos Por Edad
+#Gráfica de Barras de Casos Por Estado
 fig, ax = pt.subplots()
 ax.set_ylabel('Número de Casos')
 ax.set_title('ESTADO DE CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA')
 pt.bar(estado, estCant)
 fname="GraficoBarras_Estado_Covid_Colombia_"+hoy+".png"
+pt.savefig(fname, bbox_inches='tight')
+
+#Solución fecha sin formato
+
+for x in range(len(fe['fecha'])):
+    aux=fe['fecha'][x]
+    aux=aux[0:10]
+    e = date.fromisoformat(aux)
+    fe['fecha'][x]=e
+    fe['cantidad'][x]=int(fe['cantidad'][x])
+
+#Organización casos por día en casos por mes
+cant=[0,0,0,0,0,0,0,0]
+fech=[]
+meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre']
+
+for x in range(len(fe['fecha'])):
+    if (fe['fecha'][x].month == 3):
+        cant[0] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 4):
+        cant[1] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 5):
+        cant[2] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 6):
+        cant[3] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 7):
+        cant[4] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 8):
+        cant[5] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 9):
+        cant[6] += fe['cantidad'][x]
+    elif (fe['fecha'][x].month == 10):
+        cant[7] += fe['cantidad'][x]
+
+#Gráfica de Barras Casos Por Mes
+fig, ax = pt.subplots(figsize=(8, 7))
+ax.set_ylabel('NÚMERO DE CASOS')
+ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR MESES')
+pt.bar(meses, cant)
+fname="GraficoBarras_Mes_Covid_Colombia_"+hoy+".png"
 pt.savefig(fname, bbox_inches='tight')
 
 
