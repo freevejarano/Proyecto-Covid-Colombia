@@ -1,5 +1,5 @@
 import requests
-import pandas as px #Uso de DataFrame
+import geopandas as gpd #Uso de DataFrame
 import numpy as np #Manejo de Vectores
 import plotly
 import plotly.express as px
@@ -15,7 +15,7 @@ data = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT departame
 
 #//////////////////MAPA DE CALOR COLOMBIA//////////////////////////
 repo_url = 'https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/be6a6e239cd5b5b803c6e7c2ec405b793a9064dd/Colombia.geo.json' #Archivo GeoJSON
-mx_regions_geo = requests.get(repo_url).json()
+mx_regions_geo = gpd.read_file(repo_url)
 depa=[]
 casoDep=[]
 nombresDepartamentos=["ANTIOQUIA", "ATLANTICO", "SANTAFE DE BOGOTA D.C", "BOLIVAR", "BOYACA", "CALDAS", "CAQUETA", "CAUCA", "CESAR", "CORDOBA", "CUNDINAMARCA", "CHOCO", "HUILA", "LA GUAJIRA", "MAGDALENA", "META", "NARIÑO", "NORTE DE SANTANDER", "QUINDIO", "RISARALDA", "SANTANDER", "SUCRE", "TOLIMA", "VALLE DEL CAUCA", "ARAUCA", "CASANARE", "PUTUMAYO", "AMAZONAS", "GUAINIA", "GUAVIARE", "VAUPES", "VICHADA", "ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA"]

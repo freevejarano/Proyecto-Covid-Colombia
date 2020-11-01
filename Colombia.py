@@ -1,7 +1,6 @@
 """
 @Luis Alejandro Vejarano Gutierrez
 @Johan Sebastián Miranda
-@Manuel Alberto Torres
 
 PROYECTO COVID 19 COLOMBIA
 """
@@ -21,7 +20,7 @@ client = Socrata("www.datos.gov.co", "GJekEiJhbhkJ8pr6c4tjbMBYq")
 
 
 ### Conversión de Respuesta HTTP en pandas DataFrame
-cd = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT ciudad_de_ubicaci_n as ciudad, count(ciudad_de_ubicaci_n) as cantidad GROUP BY ciudad_de_ubicaci_n ORDER BY ciudad_de_ubicaci_n"))
+cd = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT ciudad_municipio_nom as ciudad, count(ciudad_municipio_nom) as cantidad GROUP BY ciudad_municipio_nom ORDER BY ciudad_municipio_nom"))
 se = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT sexo, count(sexo) as ctdGenero GROUP BY sexo ORDER BY sexo"))
 ed = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT edad, count(edad) as cont GROUP BY edad ORDER BY edad"))
 mt = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT estado, count(estado) as cont GROUP BY estado ORDER BY estado"))
@@ -52,7 +51,7 @@ ax1.pie(valGenero, labels=sexo, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')
 fname="GraficoTorta_Genero_Covid_Colombia_"+hoy+".png"
-pt.savefig(fname, bbox_inches='tight')
+#pt.savefig(fname, bbox_inches='tight')
 
 #Clasificación de Casos Por Ciudades Principales
 ciudad=[]
@@ -72,7 +71,7 @@ ax1.pie(cantidad, labels=ciudad, autopct='%1.1f%%',
         shadow=True, startangle=90)
 ax1.axis('equal')
 fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
-pt.savefig(fname, bbox_inches='tight')
+#pt.savefig(fname, bbox_inches='tight')
 
 
 
@@ -101,7 +100,7 @@ ax.set_ylabel('Número de Casos')
 ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR EDADES')
 pt.bar(age, agecant)
 fname="GraficoBarras_Edad_Covid_Colombia_"+hoy+".png"
-pt.savefig(fname, bbox_inches='tight')
+#pt.savefig(fname, bbox_inches='tight')
 
 
 #Solución Problema Mayúscula En Estado
@@ -129,7 +128,7 @@ ax.set_ylabel('Número de Casos')
 ax.set_title('ESTADO DE CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA')
 pt.bar(estado, estCant)
 fname="GraficoBarras_Estado_Covid_Colombia_"+hoy+".png"
-pt.savefig(fname, bbox_inches='tight')
+#pt.savefig(fname, bbox_inches='tight')
 
 #Solución fecha sin formato
 
@@ -169,7 +168,7 @@ ax.set_ylabel('NÚMERO DE CASOS')
 ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR MESES')
 pt.bar(meses, cant)
 fname="GraficoBarras_Mes_Covid_Colombia_"+hoy+".png"
-pt.savefig(fname, bbox_inches='tight')
+#pt.savefig(fname, bbox_inches='tight')
 
 
 #Muestra todas las gráficas almacenadas
