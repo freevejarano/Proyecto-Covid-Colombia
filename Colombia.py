@@ -11,8 +11,6 @@ from sodapy import Socrata #Petición HTTP
 import numpy as ny #Manejo de Vectores
 import matplotlib.pyplot as pt #Uso de Gráficas
 import time #Manejo del tiempo actual
-from datetime import date
-
 ### PETICIONES HTTP ###
 
 #Uso de Socrata Para Acceder a Datos Abiertos de Colombia con Token Único
@@ -45,11 +43,12 @@ for x in range(len(se['sexo'])):
 
 
 #Gráfica de Torta de Casos Por Género
-fig1, ax1 = pt.subplots(figsize=(10,7))
+fig1, ax1 = pt.subplots(figsize=(20,10))
 pt.title("CASOS CONFIRMADOS POR GÉNERO DE COVID-19 EN COLOMBIA\n", fontdict={'fontsize':15})
 ax1.pie(valGenero, labels=sexo, autopct='%1.1f%%',
-        shadow=True, startangle=90)
+        shadow=False, startangle=90)
 ax1.axis('equal')
+fig1.tight_layout()
 fname="GraficoTorta_Genero_Covid_Colombia_"+hoy+".png"
 #pt.savefig(fname, bbox_inches='tight')
 
@@ -58,18 +57,19 @@ ciudad=[]
 cantidad=[]
 
 for x in range(len(cd['ciudad'])):
-    if(int(cd['cantidad'][x])>10000):
+    if(int(cd['cantidad'][x])>15000):
         ciudad.append(cd['ciudad'][x])
         cantidad.append(cd['cantidad'][x])
 
 
 #Diagrama de Torta por Ciudades
 
-fig1, ax1 = pt.subplots(figsize=(10,7))
-pt.title("CASOS CONFIRMADOS DE COVID-19 EN LAS PRINCIPALES CIUDADES DE COLOMBIA\n", fontdict={'fontsize':15})
+fig1, ax1 = pt.subplots(figsize=(20,10))
+pt.title("CASOS CONFIRMADOS DE COVID-19 EN LAS CIUDADES MÁS INFECTADAS DE COLOMBIA\n", fontdict={'fontsize':15})
 ax1.pie(cantidad, labels=ciudad, autopct='%1.1f%%',
-        shadow=True, startangle=90)
+        shadow=False, startangle=90)
 ax1.axis('equal')
+fig1.tight_layout()
 fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
 #pt.savefig(fname, bbox_inches='tight')
 
@@ -77,7 +77,7 @@ fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
 
 #Clasificación de Edades Por Segmentos
 agecant=[0,0,0,0,0]
-age=['NIÑOS\n0-12\naños','ADOLESCENTES\n13-18\naños','JOVENES\n19-26\naños','ADULTOS\n26-59\naños','ANCIANOS\n60+\naños']
+age=['NIÑOS\n0-12\naños','ADOLESCENTES\n13-18\naños','JOVENES\n19-35\naños','ADULTOS\n36-59\naños','ANCIANOS\n60+\naños']
 
 for x in range(len(ed['edad'])):
     aux= int(ed['edad'][x])
@@ -86,87 +86,88 @@ for x in range(len(ed['edad'])):
         agecant[0]+=aux2
     elif (aux>=12 and aux<=18):
         agecant[1]+=aux2
-    elif (aux>18 and aux<=26):
+    elif (aux>18 and aux<=35):
         agecant[2]+=aux2
-    elif (aux>26 and aux<=59):
+    elif (aux>36 and aux<=59):
         agecant[3] += aux2
     else :
         agecant[4]+=aux2
 
 
 #Gráfica de Barras de Casos Por Edad
-fig, ax = pt.subplots()
+fig, ax = pt.subplots(figsize=(20,10))
 ax.set_ylabel('Número de Casos')
 ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR EDADES')
 pt.bar(age, agecant)
+fig1.tight_layout()
 fname="GraficoBarras_Edad_Covid_Colombia_"+hoy+".png"
 #pt.savefig(fname, bbox_inches='tight')
 
 
 #Solución Problema Mayúscula En Estado
-estado=['Asintomático','Leve','Moderado','Grave','Fallecido']
-estCant=[0,0,0,0,0]
-
+estado=['Leve','Moderado','Grave','Fallecido']
+estCant=[0,0,0,0]
 
 for x in range(len(mt['estado'])):
     aux=mt['estado'][x]
     aux2=int(mt['cont'][x])
-    if(aux=="Asintomático"):
+    if (aux=="leve" or aux=="Leve" or aux=="LEVE"):
         estCant[0]+=aux2
-    elif (aux=="leve" or aux=="Leve" or aux=="LEVE"):
+    elif (aux=="Moderado" or aux=="moderado"):
         estCant[1]+=aux2
-    elif (aux=="Moderado"):
-        estCant[2]+=aux2
     elif (aux=="Grave"):
-        estCant[3]+=aux2
+        estCant[2]+=aux2
     elif (aux=="Fallecido"):
-        estCant[4]+=aux2
+        estCant[3]+=aux2
 
 #Gráfica de Barras de Casos Por Estado
-fig, ax = pt.subplots()
+fig, ax = pt.subplots(figsize=(20,10))
 ax.set_ylabel('Número de Casos')
 ax.set_title('ESTADO DE CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA')
 pt.bar(estado, estCant)
+fig1.tight_layout()
 fname="GraficoBarras_Estado_Covid_Colombia_"+hoy+".png"
 #pt.savefig(fname, bbox_inches='tight')
 
 #Solución fecha sin formato
-
 for x in range(len(fe['fecha'])):
     aux=fe['fecha'][x]
     aux=aux[0:10]
-    e = date.fromisoformat(aux)
-    fe['fecha'][x]=e
+    demo = aux.split("/")
+    fe['fecha'][x]=int(demo[1])
     fe['cantidad'][x]=int(fe['cantidad'][x])
 
 #Organización casos por día en casos por mes
-cant=[0,0,0,0,0,0,0,0]
+cant=[0,0,0,0,0,0,0,0,0]
 fech=[]
-meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre']
+meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre']
 
 for x in range(len(fe['fecha'])):
-    if (fe['fecha'][x].month == 3):
+    if (fe['fecha'][x] == 3):
         cant[0] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 4):
+    elif (fe['fecha'][x] == 4):
         cant[1] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 5):
+    elif (fe['fecha'][x] == 5):
         cant[2] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 6):
+    elif (fe['fecha'][x] == 6):
         cant[3] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 7):
+    elif (fe['fecha'][x] == 7):
         cant[4] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 8):
+    elif (fe['fecha'][x] == 8):
         cant[5] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 9):
+    elif (fe['fecha'][x] == 9):
         cant[6] += fe['cantidad'][x]
-    elif (fe['fecha'][x].month == 10):
+    elif (fe['fecha'][x] == 10):
         cant[7] += fe['cantidad'][x]
+    elif (fe['fecha'][x] == 11):
+        cant[8] += fe['cantidad'][x]
 
 #Gráfica de Barras Casos Por Mes
-fig, ax = pt.subplots(figsize=(8, 7))
+fig, ax = pt.subplots(figsize=(20,10))
 ax.set_ylabel('NÚMERO DE CASOS')
 ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN COLOMBIA POR MESES')
 pt.bar(meses, cant)
+fig1.tight_layout()
 fname="GraficoBarras_Mes_Covid_Colombia_"+hoy+".png"
 #pt.savefig(fname, bbox_inches='tight')
 

@@ -49,7 +49,7 @@ ax1.axis('equal')
 
 fig1.tight_layout()
 fname="GraficoCircular_Localidad_Covid_Bogota_"+hoy+".png"
-plt.savefig(fname, bbox_inches='tight')
+#plt.savefig(fname, bbox_inches='tight')
 
 #Petición de datos, conversión de json a lista de diccionarios
 req3 = requests.get(url=urlDatos+urlDatosSQL3)
@@ -58,7 +58,6 @@ ndict3=reqJson3['result']['records']
 
 #Organización de Datos por Género
 genero=['Mujeres','Hombres']
-cantgen=[int(ndict3[0]['cantidad']),int(ndict3[1]['cantidad'])]
 mujeres=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 hombres=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 for k in range(len(localidad)):
@@ -92,8 +91,8 @@ def autolabel(rects):
                     ha='center', va='bottom')
 
 fig.tight_layout()
-fname="GraficaBarras_Genero_Covid_Bogota_"+hoy+".png"
-plt.savefig(fname, bbox_inches='tight')
+fname="GraficaBarras_Genero_Covid_Localidad_Bogota_"+hoy+".png"
+#plt.savefig(fname, bbox_inches='tight')
 
 
 
