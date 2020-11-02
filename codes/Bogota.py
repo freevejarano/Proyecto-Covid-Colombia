@@ -93,6 +93,7 @@ def Bog():
         elif (x['fecha']==11):
             cant[8]+=x['cantidad']
 
+
     #Gráfica de Barras Casos Por Mes
     fig, ax = plt.subplots(figsize=(20,10))
     ax.set_ylabel('NÚMERO DE CASOS')
@@ -113,7 +114,6 @@ def Bog():
     genero=['Mujeres','Hombres']
     cantgen=[int(ndict3[0]['cantidad']),int(ndict3[1]['cantidad'])]
 
-
     #Gráfico de Torta Casos Por Género
     fig1, ax1 = plt.subplots(figsize=(20,10))
     plt.title("CASOS CONFIRMADOS POR GÉNERO DE COVID-19 EN BOGOTÁ\n", fontdict={'fontsize':15})
@@ -132,7 +132,7 @@ def Bog():
 
     #Clasificación de Edades Por Segmentos
     agecant=[0,0,0,0,0]
-    age=['NIÑOS\n0-12\naños','ADOLESCENTES\n13-18\naños','JOVENES\n19-26\naños','ADULTOS\n26-59\naños','ANCIANOS\n60+\naños']
+    age=['NIÑOS\n0-12\naños','ADOLESCENTES\n13-18\naños','JOVENES\n19-35\naños','ADULTOS\n36-59\naños','ANCIANOS\n60+\naños']
     for x in ndict4:
         if (isinstance(x['edad'], str)):
             aux= int(x['edad'])
@@ -141,9 +141,9 @@ def Bog():
                 agecant[0]+=aux2
             elif (aux>=12 and aux<=18):
                 agecant[1]+=aux2
-            elif (aux>18 and aux<=26):
+            elif (aux>18 and aux<=35):
                 agecant[2]+=aux2
-            elif (aux>26 and aux<=59):
+            elif (aux>35 and aux<=59):
                 agecant[3] += aux2
             else :
                 agecant[4]+=aux2

@@ -19,10 +19,10 @@ Colombia.Col() #Gráficas de Colombia
 
 ColombiaRegiones.ColReg() #Gráficas de Colombia por Departamentos
 
-MapaColombia.MapCol() #Mapa de Colombia Por Departamentos Con Los Casos de Covid
-
 Bogota.Bog() #Gráficas de Bogotá
 
 BogotaLocalidades.BogLoc() #Gráficas de Bogotá por Localidades
+
+MapaColombia.MapCol() #Mapa de Colombia Por Departamentos Con Los Casos de Covid
 
 MapaBogota.MapBog() #Mapa de Calor de Bogotá Por Localidades Con Los Casos de Covid

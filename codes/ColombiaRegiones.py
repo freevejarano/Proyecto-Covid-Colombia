@@ -35,7 +35,7 @@ def ColReg():
 
     #Gráfico de Torta Casos Por Departamento
     fig1, ax1 = plt.subplots(figsize=(20,10))
-    plt.title("CASOS CONFIRMADOS POR LOCALIDAD DE COVID-19 EN COLOMBIA\n", fontdict={'fontsize':15})
+    plt.title("CASOS CONFIRMADOS POR DEPARTAMENTO EN COLOMBIA\n", fontdict={'fontsize':15})
 
     ax1.pie(cantidad, labels=depa, autopct='%1.1f%%',
             shadow=False, startangle=90)
@@ -62,6 +62,7 @@ def ColReg():
     fig, ax = plt.subplots(figsize=(20,10))
     rects1 = ax.bar(x , mujeres, width, label='Mujeres')
     rects2 = ax.bar(x + width, hombres, width, label='Hombres')
+
 
     #Gráfica de barras por Regiones y Género
     ax.set_ylabel('Cantidad de Casos')

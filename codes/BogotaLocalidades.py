@@ -101,6 +101,7 @@ def BogLoc():
     reqJson5 = req5.json()
     ndict5=reqJson5['result']['records']
 
+
     #Clasificación del estado de los casos de Covid en Las Localidades de Bogotá
     recu=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     leve=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

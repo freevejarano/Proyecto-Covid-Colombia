@@ -35,8 +35,8 @@ def Col():
     for x in range(len(se['sexo'])):
         if(se['sexo'][x] == 'M' or se['sexo'][x] == 'm'):
             valGenero[0]+= int(se['ctdGenero'][x])
-        else:
-            valGenero[1]+= int(se['ctdGenero'][x])
+        elif (se['sexo'][x] == 'F' or se['sexo'][x] == 'f'):
+            valGenero[1] += int(se['ctdGenero'][x])
 
 
     #Gráfica de Torta de Casos Por Género
@@ -68,7 +68,6 @@ def Col():
     fig1.tight_layout()
     fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
     pt.savefig(fname, bbox_inches='tight')
-
 
     #Clasificación de Edades Por Segmentos
     agecant=[0,0,0,0,0]
