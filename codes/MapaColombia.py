@@ -18,7 +18,7 @@ def MapCol():
     # Ingresar al sitio y descargar el CSV con los datos de Colombia
     url = "https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD&bom=true&format=true"
     response = requests.get(url)
-    with open(os.path.join("Archivo", "CasosCol.csv"), "wb") as f:
+    with open(os.path.join("data", "CasosCol.csv"), "wb") as f:
         f.write(response.content)
 
     #Abrir Archivo csv con los datos
