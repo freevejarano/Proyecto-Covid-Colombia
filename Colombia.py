@@ -8,16 +8,16 @@ PROYECTO COVID 19 COLOMBIA
 #### LIBRERIAS #####
 import pandas as pd #Uso de DataFrame
 from sodapy import Socrata #Petición HTTP
-import numpy as ny #Manejo de Vectores
+import numpy as ny #Manejo de Vectores Extensos
 import matplotlib.pyplot as pt #Uso de Gráficas
-import time #Manejo del tiempo actual
+import time #Manejo del tiempo
 
 def Col():
+    # Se obtiene la fecha actual para el nombre del PNG generado por cada gráfica
+    hoy = time.strftime("%d-%m-%y")
     ### PETICIONES HTTP ###
-
     #Uso de Socrata Para Acceder a Datos Abiertos de Colombia con Token Único
     client = Socrata("www.datos.gov.co", "GJekEiJhbhkJ8pr6c4tjbMBYq")
-
 
     ### Conversión de Respuesta HTTP en pandas DataFrame
     cd = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT ciudad_municipio_nom as ciudad, count(ciudad_municipio_nom) as cantidad GROUP BY ciudad_municipio_nom ORDER BY ciudad_municipio_nom"))
@@ -27,11 +27,6 @@ def Col():
     fe = pd.DataFrame.from_records(client.get("gt2j-8ykr", query="SELECT fecha_de_notificaci_n as fecha, count(fecha_de_notificaci_n) as cantidad GROUP BY fecha_de_notificaci_n ORDER BY fecha_de_notificaci_n"))
 
     ### MANEJO DE DATOS / GRÁFICOS ###
-
-
-    #Se obtiene la fecha actual para el nombre del PNG generado por cada gráfica
-    hoy=time.strftime("%d-%m-%y")
-
 
     #Solución problema de BD por género en mayúscula y minúsucula
     valGenero=[0,0]
@@ -52,7 +47,7 @@ def Col():
     ax1.axis('equal')
     fig1.tight_layout()
     fname="GraficoTorta_Genero_Covid_Colombia_"+hoy+".png"
-    #pt.savefig(fname, bbox_inches='tight')
+    pt.savefig(fname, bbox_inches='tight')
 
     #Clasificación de Casos Por Ciudades Principales
     ciudad=[]
@@ -65,7 +60,6 @@ def Col():
 
 
     #Diagrama de Torta por Ciudades
-
     fig1, ax1 = pt.subplots(figsize=(20,10))
     pt.title("CASOS CONFIRMADOS DE COVID-19 EN LAS CIUDADES MÁS INFECTADAS DE COLOMBIA\n", fontdict={'fontsize':15})
     ax1.pie(cantidad, labels=ciudad, autopct='%1.1f%%',
@@ -73,8 +67,7 @@ def Col():
     ax1.axis('equal')
     fig1.tight_layout()
     fname="GraficoTorta_Casos_Ciudad_Covid_Colombia_"+hoy+".png"
-    #pt.savefig(fname, bbox_inches='tight')
-
+    pt.savefig(fname, bbox_inches='tight')
 
 
     #Clasificación de Edades Por Segmentos
@@ -103,7 +96,7 @@ def Col():
     pt.bar(age, agecant)
     fig1.tight_layout()
     fname="GraficoBarras_Edad_Covid_Colombia_"+hoy+".png"
-    #pt.savefig(fname, bbox_inches='tight')
+    pt.savefig(fname, bbox_inches='tight')
 
 
     #Solución Problema Mayúscula En Estado
@@ -128,7 +121,7 @@ def Col():
     pt.bar(estado, estCant)
     fig1.tight_layout()
     fname="GraficoBarras_Estado_Covid_Colombia_"+hoy+".png"
-    #pt.savefig(fname, bbox_inches='tight')
+    pt.savefig(fname, bbox_inches='tight')
 
     #Solución fecha sin formato
     for x in range(len(fe['fecha'])):
@@ -170,7 +163,7 @@ def Col():
     pt.bar(meses, cant)
     fig1.tight_layout()
     fname="GraficoBarras_Mes_Covid_Colombia_"+hoy+".png"
-    #pt.savefig(fname, bbox_inches='tight')
+    pt.savefig(fname, bbox_inches='tight')
 
 
     #Muestra todas las gráficas almacenadas

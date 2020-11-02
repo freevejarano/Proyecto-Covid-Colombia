@@ -1,25 +1,26 @@
-import requests
+"""
+@Luis Alejandro Vejarano Gutierrez
+@Johan Sebastián Miranda
+
+PROYECTO COVID 19 COLOMBIA
+"""
+
+import requests #Permite las peticiones a la API
 import numpy as np #Manejo de Vectores
 import matplotlib.pyplot as plt #Uso de Gráficas
-import datetime
-import time
-from datetime import date
+import time #Manejo del tiempo
 
 def BogLoc():
     #Se obtiene la fecha actual para el nombre del PNG generado por cada gráfica
     hoy=time.strftime("%d-%m-%y")
 
-    #URL API Datos Abiertos de Bogotá
-    urlDatos = 'https://datosabiertos.bogota.gov.co/api/3/action/datastore_search_sql?'
-
     #Consulta SQL a la API
+    urlDatos = 'https://datosabiertos.bogota.gov.co/api/3/action/datastore_search_sql?'
     urlDatosSQL1 = 'sql=SELECT "LOCALIDAD_ASIS" as localidad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "LOCALIDAD_ASIS" order by "LOCALIDAD_ASIS"'
     urlDatosSQL2 = 'sql=SELECT "FECHA_DIAGNOSTICO" as fecha, "LOCALIDAD_ASIS" as localidad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "FECHA_DIAGNOSTICO","LOCALIDAD_ASIS" order by "FECHA_DIAGNOSTICO","LOCALIDAD_ASIS"'
     urlDatosSQL3 = 'sql=SELECT "SEXO" as gen, "LOCALIDAD_ASIS" as localidad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "SEXO","LOCALIDAD_ASIS" order by "SEXO","LOCALIDAD_ASIS"'
     urlDatosSQL4 = 'sql=SELECT "EDAD" as edad, "LOCALIDAD_ASIS" as localidad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "EDAD","LOCALIDAD_ASIS" order by "EDAD","LOCALIDAD_ASIS"'
     urlDatosSQL5 = 'sql=SELECT "ESTADO" as estado, "LOCALIDAD_ASIS" as localidad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "ESTADO","LOCALIDAD_ASIS" order by "ESTADO","LOCALIDAD_ASIS"'
-
-
 
     #Petición de datos, conversión de json a lista de diccionarios
     req1 = requests.get(url=urlDatos+urlDatosSQL1)
@@ -39,10 +40,9 @@ def BogLoc():
             cantloca[aux]+=int(x['cantidad'])
 
 
-
     #Gráfico de Torta Casos Por Localidad
     fig1, ax1 = plt.subplots(figsize=(20,10))
-    plt.title("CASOS CONFIRMADOS POR LOCALIDAD DE COVID-19 EN BOGOTÁ\n", fontdict={'fontsize':15})
+    plt.title("CASOS CONFIRMADOS DE COVID-19 POR LOCALIDAD EN BOGOTÁ\n", fontdict={'fontsize':15})
 
     ax1.pie(cantloca, labels=localidad, autopct='%1.1f%%',
             shadow=False, startangle=90)
@@ -50,14 +50,14 @@ def BogLoc():
 
     fig1.tight_layout()
     fname="GraficoCircular_Covid_Localidad_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
     #Petición de datos, conversión de json a lista de diccionarios
     req3 = requests.get(url=urlDatos+urlDatosSQL3)
     reqJson3 = req3.json()
     ndict3=reqJson3['result']['records']
 
-    #Organización de Datos por Género
+    #Organización de Datos por Género en Localidades
     genero=['Mujeres','Hombres']
     mujeres=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     hombres=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -69,13 +69,13 @@ def BogLoc():
                 if(x['gen']=='M'):
                     hombres[k]+=int(x['cantidad'])
 
-    x = np.arange(len(localidad))  # the label locations
-    width = 0.35  # the width of the bars
+    x = np.arange(len(localidad))
+    width = 0.35
     fig, ax = plt.subplots(figsize=(20,10))
     rects1 = ax.bar(x , mujeres, width, label='Mujeres')
     rects2 = ax.bar(x + width, hombres, width, label='Hombres')
 
-
+    #Gráfica de Barras Por Género en Localidades
     ax.set_ylabel('Cantidad de Casos')
     ax.set_title('Casos Por Género En Las Localidades de Bogotá')
     ax.set_xticks(x)
@@ -93,9 +93,7 @@ def BogLoc():
 
     fig.tight_layout()
     fname="GraficaBarras_Genero_Covid_Localidad_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
-
-
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -103,7 +101,7 @@ def BogLoc():
     reqJson5 = req5.json()
     ndict5=reqJson5['result']['records']
 
-    #Clasificación del estado de los casos de Covid en Bogotá
+    #Clasificación del estado de los casos de Covid en Las Localidades de Bogotá
     recu=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     leve=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     mode=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -126,8 +124,9 @@ def BogLoc():
                 elif (x['estado']=='Fallecido No aplica No Causa Directa'):
                     falleNo[k]+=int(x['cantidad'])
 
-    x = np.arange(len(localidad))  # the label locations
-    width = 0.35  # the width of the bars
+    #Gráfica de Barras por Estado en Localidades de Bogotá
+    x = np.arange(len(localidad))
+    width = 0.35
     estado=['Recuperado','Leve','Moderado','Grave','Fallecido','Fallecido No Aplica No Causa Directa']
     fig, ax = plt.subplots(figsize=(20,10))
     rects1 = ax.bar(x, recu, width, label='Recuperado')
@@ -143,7 +142,6 @@ def BogLoc():
     ax.set_xticklabels(localidad,rotation='vertical')
     ax.legend()
 
-
     def autolabel(rects):
         for rect in rects:
             height = rect.get_height()
@@ -153,10 +151,9 @@ def BogLoc():
                         textcoords="offset points",
                         ha='center', va='bottom')
 
-
     fig.tight_layout()
     fname="GraficaBarras_Estado_Covid_Localidad_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -164,8 +161,6 @@ def BogLoc():
     reqJson2 = req2.json()
     ndict2=reqJson2['result']['records']
 
-    #Correción formato de fecha
-    lis2=[]
     #Organización casos por día en casos por mes
     mar=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     abr=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -177,6 +172,7 @@ def BogLoc():
     oct=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     nov=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
+    #Correción formato de fecha
     for k in range(len(localidad)):
         for x in ndict2:
             if(isinstance(x['fecha'],str) and x['localidad']==localidad[k]):
@@ -203,9 +199,9 @@ def BogLoc():
                 elif (e == 11):
                     nov[k] += int(x['cantidad'])
 
-
-    x = np.arange(len(localidad))  # the label locations
-    width = 0.35  # the width of the bars
+    #Gráfica de barras por meses en Localidades de Bogotá
+    x = np.arange(len(localidad))
+    width = 0.35
     meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre']
 
     fig, ax = plt.subplots(figsize=(20,10))
@@ -219,13 +215,11 @@ def BogLoc():
     rects8 = ax.bar(x + 0.35, oct, width, label='Octubre')
     rects9 = ax.bar(x + 0.4, nov, width, label='Noviembre')
 
-
     ax.set_ylabel('Cantidad de Casos')
     ax.set_title('Casos Por Meses En Las Localidades de Bogotá')
     ax.set_xticks(x)
     ax.set_xticklabels(localidad,rotation='vertical')
     ax.legend()
-
 
     def autolabel(rects):
         for rect in rects:
@@ -237,7 +231,7 @@ def BogLoc():
                         ha='center', va='bottom')
     fig.tight_layout()
     fname="GraficaBarras_Mes_Covid_Localidad_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -263,9 +257,9 @@ def BogLoc():
                 else :
                     ancianos[k]+=aux2
 
-
-    x = np.arange(len(localidad))  # the label locations
-    width = 0.35  # the width of the bars
+    #Gráfica de Barras Por Edades en Localidades de Bogotá
+    x = np.arange(len(localidad))
+    width = 0.35
 
     fig, ax = plt.subplots(figsize=(20,10))
     rects1 = ax.bar(x , menores, width, label='Menores de Edad (0-18 años)')
@@ -273,13 +267,11 @@ def BogLoc():
     rects3 = ax.bar(x + width/2+0.2, adultos, width, label='Adultos (36-59 años)')
     rects4 = ax.bar(x + width/2+0.3, ancianos, width, label='Ancianos (60+ años)')
 
-
     ax.set_ylabel('Cantidad de Casos')
     ax.set_title('Casos Por Edades En Las Localidades de Bogotá')
     ax.set_xticks(x)
     ax.set_xticklabels(localidad,rotation='vertical')
     ax.legend()
-
 
     def autolabel(rects):
         for rect in rects:
@@ -291,7 +283,8 @@ def BogLoc():
                         ha='center', va='bottom')
 
     fname="GraficaBarras_Edad_Covid_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
-
+    plt.savefig(fname, bbox_inches='tight')
     fig.tight_layout()
+
+    # Muestra todos los gráficos
     plt.show()

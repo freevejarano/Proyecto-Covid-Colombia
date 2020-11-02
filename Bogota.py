@@ -1,7 +1,14 @@
-import requests
-import numpy as np #Manejo de Vectores
+"""
+@Luis Alejandro Vejarano Gutierrez
+@Johan Sebastián Miranda
+
+PROYECTO COVID 19 COLOMBIA
+"""
+
+import requests #Permite las peticiones a la API
+import numpy as np #Manejo de Vectores Extensos
 import matplotlib.pyplot as plt #Uso de Gráficas
-import time
+import time #Manejo del tiempo
 
 def Bog():
     #Se obtiene la fecha actual para el nombre del PNG generado por cada gráfica
@@ -16,7 +23,6 @@ def Bog():
     urlDatosSQL3 = 'sql=SELECT "SEXO" as gen, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "SEXO" order by "SEXO"'
     urlDatosSQL4 = 'sql=SELECT "EDAD" as edad, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "EDAD" order by "EDAD"'
     urlDatosSQL5 = 'sql=SELECT "ESTADO" as estado, count(*) as cantidad from "b64ba3c4-9e41-41b8-b3fd-2da21d627558" group by "ESTADO" order by "ESTADO"'
-
 
     #Petición de datos, conversión de json a lista de diccionarios
     req1 = requests.get(url=urlDatos+urlDatosSQL1)
@@ -42,7 +48,7 @@ def Bog():
     ax1.axis('equal')
     fname="GraficoTorta_Localidad_Covid_Bogota_"+hoy+".png"
     plt.tight_layout()
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -64,9 +70,9 @@ def Bog():
             lis2.append(dit)
 
     #Organización casos por día en casos por mes
-    cant=[0,0,0,0,0,0,0,0]
+    cant=[0,0,0,0,0,0,0,0,0]
     fech=[]
-    meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre']
+    meses=['Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre']
     for x in lis2:
         if (x['fecha']==3):
             cant[0]+=x['cantidad']
@@ -84,6 +90,8 @@ def Bog():
             cant[6]+=x['cantidad']
         elif (x['fecha']==10):
             cant[7]+=x['cantidad']
+        elif (x['fecha']==11):
+            cant[8]+=x['cantidad']
 
     #Gráfica de Barras Casos Por Mes
     fig, ax = plt.subplots(figsize=(20,10))
@@ -92,7 +100,7 @@ def Bog():
     plt.bar(meses, cant)
     plt.tight_layout()
     fname="GraficoBarras_Mes_Covid_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
 
@@ -114,8 +122,7 @@ def Bog():
     ax1.axis('equal')
 
     fname="GraficoTorta_Genero_Covid_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
-
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -147,7 +154,7 @@ def Bog():
     ax.set_title('CASOS CONFIRMADOS DE COVID-19 EN BOGOTÁ POR EDAD')
     plt.bar(age, agecant)
     fname="GraficoBarras_Edad_Covid_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Petición de datos, conversión de json a lista de diccionarios
@@ -178,7 +185,7 @@ def Bog():
     ax.set_title('ESTADO DE CASOS CONFIRMADOS DE COVID-19 EN BOGOTÁ')
     plt.bar(estado, estCant)
     fname="GraficoBarras_Estado_Covid_Bogota_"+hoy+".png"
-    #plt.savefig(fname, bbox_inches='tight')
+    plt.savefig(fname, bbox_inches='tight')
 
 
     #Muestra todos los gráficos
